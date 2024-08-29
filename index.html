@@ -29,8 +29,9 @@
       </div>
     </div>
 
-    <div class="flex justify-center mt-6">
+    <div class="flex justify-center mt-6 space-x-4">
       <button id="compareBtn" class="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600">Compare</button>
+      <button id="resetBtn" class="px-6 py-3 bg-gray-500 text-white font-bold rounded-lg hover:bg-gray-600">Reset</button>
     </div>
 
     <div id="diffResults" class="mt-10 bg-white p-6 rounded-lg shadow-md hidden">
@@ -72,6 +73,14 @@
         document.getElementById('diffLeft').innerHTML = leftOutput;
         document.getElementById('diffRight').innerHTML = rightOutput;
         document.getElementById('diffResults').classList.remove('hidden');
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', function() {
+        document.getElementById('text1').value = '';
+        document.getElementById('text2').value = '';
+        document.getElementById('diffLeft').innerHTML = '';
+        document.getElementById('diffRight').innerHTML = '';
+        document.getElementById('diffResults').classList.add('hidden');
       });
     });
   </script>
