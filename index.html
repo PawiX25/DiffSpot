@@ -48,45 +48,41 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script>
-    function escapeHtml(text) {
-      return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('compareBtn').addEventListener('click', function() {
-        const text1 = document.getElementById('text1').value;
-        const text2 = document.getElementById('text2').value;
+        let text1 = document.getElementById('text1').value;
+        let text2 = document.getElementById('text2').value;
 
         if (!text1 || !text2) {
           alert('Please enter text in both text areas.');
           return;
         }
 
+        // Highlight the syntax before diffing
+        text1 = Prism.highlight(text1, Prism.languages.html, 'html');
+        text2 = Prism.highlight(text2, Prism.languages.html, 'html');
+
+        // Create the diff
         const diff = Diff.diffLines(text1, text2);
 
         let leftOutput = '';
         let rightOutput = '';
 
         diff.forEach(part => {
-          const escapedValue = escapeHtml(part.value);
+          const value = part.value;
           if (part.added) {
-            rightOutput += `<div class="added"><pre><code class="language-html">${escapedValue}</code></pre></div>`;
+            rightOutput += `<div class="added"><pre><code>${value}</code></pre></div>`;
           } else if (part.removed) {
-            leftOutput += `<div class="removed"><pre><code class="language-html">${escapedValue}</code></pre></div>`;
+            leftOutput += `<div class="removed"><pre><code>${value}</code></pre></div>`;
           } else {
-            leftOutput += `<div><pre><code class="language-html">${escapedValue}</code></pre></div>`;
-            rightOutput += `<div><pre><code class="language-html">${escapedValue}</code></pre></div>`;
+            leftOutput += `<div><pre><code>${value}</code></pre></div>`;
+            rightOutput += `<div><pre><code>${value}</code></pre></div>`;
           }
         });
 
         document.getElementById('diffLeft').innerHTML = leftOutput;
         document.getElementById('diffRight').innerHTML = rightOutput;
         document.getElementById('diffResults').classList.remove('hidden');
-
-        Prism.highlightAll();
       });
 
       document.getElementById('resetBtn').addEventListener('click', function() {
