@@ -6,11 +6,13 @@
   <title>Diff Checker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.2.0/diff.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
   <style>
     .added { background-color: #d4f5d4; }
     .removed { background-color: #f5d4d4; }
     .diff-container { display: flex; }
     .diff-column { width: 50%; padding: 10px; }
+    .prism-code { background: none; border: none; }
   </style>
 </head>
 <body class="bg-gray-100">
@@ -43,6 +45,7 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script>
     function escapeHtml(text) {
       const element = document.createElement('div');
@@ -51,6 +54,10 @@
         return element.innerHTML;
       }
       return '';
+    }
+
+    function escapeForPrism(text) {
+      return text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;');
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -69,20 +76,22 @@
         let rightOutput = '';
 
         diff.forEach(part => {
-          const escapedValue = escapeHtml(part.value);
+          const escapedValue = escapeForPrism(part.value);
           if (part.added) {
-            rightOutput += `<div class="added">+ ${escapedValue}</div>`;
+            rightOutput += `<div class="added"><pre><code class="language-javascript">${escapedValue}</code></pre></div>`;
           } else if (part.removed) {
-            leftOutput += `<div class="removed">- ${escapedValue}</div>`;
+            leftOutput += `<div class="removed"><pre><code class="language-javascript">${escapedValue}</code></pre></div>`;
           } else {
-            leftOutput += `<div>${escapedValue}</div>`;
-            rightOutput += `<div>${escapedValue}</div>`;
+            leftOutput += `<div><pre><code class="language-javascript">${escapedValue}</code></pre></div>`;
+            rightOutput += `<div><pre><code class="language-javascript">${escapedValue}</code></pre></div>`;
           }
         });
 
         document.getElementById('diffLeft').innerHTML = leftOutput;
         document.getElementById('diffRight').innerHTML = rightOutput;
         document.getElementById('diffResults').classList.remove('hidden');
+
+        Prism.highlightAll();
       });
 
       document.getElementById('resetBtn').addEventListener('click', function() {
