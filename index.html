@@ -44,6 +44,15 @@
   </div>
 
   <script>
+    function escapeHtml(text) {
+      const element = document.createElement('div');
+      if (text) {
+        element.innerText = text;
+        return element.innerHTML;
+      }
+      return '';
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('compareBtn').addEventListener('click', function() {
         const text1 = document.getElementById('text1').value;
@@ -60,13 +69,14 @@
         let rightOutput = '';
 
         diff.forEach(part => {
+          const escapedValue = escapeHtml(part.value);
           if (part.added) {
-            rightOutput += `<div class="added">+ ${part.value}</div>`;
+            rightOutput += `<div class="added">+ ${escapedValue}</div>`;
           } else if (part.removed) {
-            leftOutput += `<div class="removed">- ${part.value}</div>`;
+            leftOutput += `<div class="removed">- ${escapedValue}</div>`;
           } else {
-            leftOutput += `<div>${part.value}</div>`;
-            rightOutput += `<div>${part.value}</div>`;
+            leftOutput += `<div>${escapedValue}</div>`;
+            rightOutput += `<div>${escapedValue}</div>`;
           }
         });
 
