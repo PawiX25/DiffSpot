@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diff Checker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.2.0/diff.min.js"></script>
+  <style>
+    .added { background-color: #d4f5d4; }
+    .removed { background-color: #f5d4d4; }
+    .diff-container { display: flex; }
+    .diff-column { width: 50%; padding: 10px; }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <div class="container mx-auto py-10">
+    <h1 class="text-4xl font-bold text-center mb-10">Diff Checker</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h2 class="text-xl font-semibold mb-2">Text 1</h2>
+        <textarea id="text1" class="w-full h-64 p-4 border border-gray-300 rounded-lg" placeholder="Enter the first text..."></textarea>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-semibold mb-2">Text 2</h2>
+        <textarea id="text2" class="w-full h-64 p-4 border border-gray-300 rounded-lg" placeholder="Enter the second text..."></textarea>
+      </div>
+    </div>
+
+    <div class="flex justify-center mt-6">
+      <button id="compareBtn" class="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600">Compare</button>
+    </div>
+
+    <div id="diffResults" class="mt-10 bg-white p-6 rounded-lg shadow-md hidden">
+      <h2 class="text-2xl font-semibold mb-4">Differences:</h2>
+      <div class="diff-container">
+        <div id="diffLeft" class="diff-column"></div>
+        <div id="diffRight" class="diff-column"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('compareBtn').addEventListener('click', function() {
+        const text1 = document.getElementById('text1').value;
+        const text2 = document.getElementById('text2').value;
+
+        if (!text1 || !text2) {
+          alert('Please enter text in both text areas.');
+          return;
+        }
+
+        const diff = Diff.diffLines(text1, text2);
+
+        let leftOutput = '';
+        let rightOutput = '';
+
+        diff.forEach(part => {
+          if (part.added) {
+            rightOutput += `<div class="added">+ ${part.value}</div>`;
+          } else if (part.removed) {
+            leftOutput += `<div class="removed">- ${part.value}</div>`;
+          } else {
+            leftOutput += `<div>${part.value}</div>`;
+            rightOutput += `<div>${part.value}</div>`;
+          }
+        });
+
+        document.getElementById('diffLeft').innerHTML = leftOutput;
+        document.getElementById('diffRight').innerHTML = rightOutput;
+        document.getElementById('diffResults').classList.remove('hidden');
+      });
+    });
+  </script>
+</body>
+</html>
